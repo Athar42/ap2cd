@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id "com.gradleup.shadow" version "9.2.2"
+    id "io.papermc.paperweight.userdev" version "2.0.0-beta.19"
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+base {
+    archivesName = archives_base_name
+}
+
+version = plugin_version
+group = maven_group
+
+processResources {
+    filesMatching(["plugin.yml", "paper-plugin.yml"]) {
+        expand "plugin_version": plugin_version,
+                "bukkit_api_version": bukkit_api_version
+    }
+}
+
+dependencies {
+    paperweight.paperDevBundle("${bukkit_version}")
+    shadow "dev.jorel:commandapi-paper-shade:${command_api_version}"
+}
+
+repositories {
+    mavenCentral()
+    // You need this maven repository if you want to use the paper dependency
+    maven {
+        name = "papermc"
+        url = uri("https://repo.papermc.io/repository/maven-public/")
+    }
+    maven { url = "https://repo.codemc.org/repository/maven-public/" }
+    mavenLocal()
+}
+
+paperweight.reobfArtifactConfiguration = io.papermc.paperweight.userdev.ReobfArtifactConfiguration.getMOJANG_PRODUCTION()
+
+shadowJar {
+    configurations = [project.configurations.shadow]
+    archiveClassifier.set("")
+    relocate("dev.jorel.commandapi", "me.Athar42.${mod_id}.commandapi")
+}
