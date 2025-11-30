@@ -1,39 +1,60 @@
-# AudioPlayer To CustomDiscs v1.0.0 for Paper and Folia 1.21.7 / 1.21.8 / 1.21.9 / 1.21.10
+# AudioPlayer To CustomDiscs v1.1.0
+### For Paper and Folia
+### 1.21.7 to 1.21.10
+
+---
+
 A Paper plugin to (kind of) convert an AudioPlayer instrument into a working CustomDiscs compatible format.
 
-This plugin will be usefull if you need to play a custom music disc, goat horn or player head initially created with AudioPlayer, then ported to a CustomDiscs compliant server.
+This plugin will be useful if you need to play a custom music disc, goat horn or player head initially created with AudioPlayer, then ported to a [CustomDiscs](https://modrinth.com/plugin/customdiscs-plugin) compliant server.
 
-This initial release doesn't do an automatic conversion, it'll need the player input to request the conversion to take place.
-Also, no permission system is in place for now.
+Release 1.1.0 introduce the automatic conversion ! (Manual conversion mode is still available and the one active by default)
+
+Also, no permission system is in place for now (unless requested).
 
 ---
 
 ## How to use
-Use of this plugin is as simple as :
+This plugin work in two modes :
+- Automatic conversion mode
+- Manual conversion mode
 
-- Take the item you want to convert in your main hand
+In automatic mode (when you set "automaticConvert" to true in the ```config.yml``` file) :
+- Goat horns will be converted when attempting to first play it. A second attempt will play it.
+- Custom discs will be converted when being played (inserted by players or, in theory, any automated form of insertion).
+- Player heads will also be converted instantly on head placement. When already placed on top of a note block, one or two triggers will be required to be actually played.  
+
+In manual mode (which will still work even if the "Automatic mode" is enabled) :
+
+- Take the item you want to convert in your **main hand** ONLY
 - In chat, use ```/ap2cd convert```
 
-Special note : This plugin will not check if the corresponding audio file exist, ensure the following :
+Special note : This plugin will now check if a corresponding audio file exist (by its ID value), so ensure the following :
 - Original AudioPlayer music files located inside ```audio_player_data/``` should be placed inside ```plugins/CustomDiscs/musicdata/```
+  - Failure to provide those music files will result in the conversion to fail (without modifying the original item).
 
-By default, as no check are taking place, the file extension will be set to .mp3.
 
-If the original file is a .wav, after running the ```/ap2cd convert``` command, you can execute ```/ap2cd setwav```
-
-The other way is also available with ```/ap2cd setmp3```
+In case the detected file exist in multiple extensions type, the wrong one could be used.
+In such rare scenario, you can use one of those commands while holding the item in your main hand :
+- Set to WAV type : ```/ap2cd setwav```
+- Set to MP3 type : ```/ap2cd setmp3```
+- Set to FLAC type : ```/ap2cd setflac```
 
 ---
 
 ## Versions support matrix :
 
-| Minecraft version                          | Server type     | Compatible versions | Latest compatible<br>version                                   |
-|--------------------------------------------|-----------------|---------------------|----------------------------------------------------------------|
-| **1.21.7-9, 1.21.8**<br>**1.21.8**         | Paper<br>Folia  | 1.0.0<br>1.0.0      | [1.0.0](https://github.com/Athar42/ap2cd/releases/tag/v1.0.0)  |
-| **1.21.9, 1.21.10**<br>**1.21.9, 1.21.10** | Paper<br>Folia  | 1.0.0<br>1.0.0      | [1.0.0](https://github.com/Athar42/ap2cd/releases/tag/v1.0.0)  |
+| Minecraft version                          | Server type     | Compatible versions        | Latest compatible<br>version                                                  |
+|--------------------------------------------|-----------------|----------------------------|-------------------------------------------------------------------------------|
+| **1.21.7-9, 1.21.8**<br>**1.21.8**         | Paper<br>Folia  | 1.0.0-1.1.0<br>1.0.0-1.1.0 | [1.1.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.0) |
+| **1.21.9, 1.21.10**<br>**1.21.9, 1.21.10** | Paper<br>Folia  | 1.0.0-1.1.0<br>1.0.0-1.1.0 | [1.1.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.0) |
 
 ---
 
 ## Final notes
 
 This plugin may **(or may not)** work with earlier versions of PaperMC/Folia.
+
+Version 1.1.0+ now require ProtocolLib to be installed too.
+
+**This plugin will now be made available on both Modrinth and Hangar (PaperMC).**

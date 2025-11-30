@@ -14,15 +14,15 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class SetMP3 extends CommandAPICommand {
+public class SetWAV extends CommandAPICommand {
     AudioPlayer2CustomDiscs plugin = AudioPlayer2CustomDiscs.getInstance();
 
-	public SetMP3(AudioPlayer2CustomDiscs plugin) {
-		super("setmp3");
+	public SetWAV(AudioPlayer2CustomDiscs plugin) {
+		super("setwav");
 
-		this.withFullDescription(NamedTextColor.GRAY + "Change the extension of the audio file to .mp3");
-		this.withUsage("/ap2cd setmp3");
-		//this.withPermission("audioplayer2customdiscs.setmp3");
+		this.withFullDescription(NamedTextColor.GRAY + "Change the extension of the audio file to .wav");
+		this.withUsage("/ap2cd setwav");
+		//this.withPermission("audioplayer2customdiscs.setwav");
 
 		this.executesPlayer(this::onCommandPlayer);
 		this.executesConsole(this::onCommandConsole);
@@ -45,49 +45,49 @@ public class SetMP3 extends CommandAPICommand {
             return 0;
         }
 
-        if (resultIsMusicDisc) {
-            ItemStack disc = new ItemStack(player.getInventory().getItemInMainHand());
-            ItemMeta metaDisc = disc.getItemMeta();
-            PersistentDataContainer dataDisc = metaDisc.getPersistentDataContainer();
+		if (resultIsMusicDisc) {
+			ItemStack disc = new ItemStack(player.getInventory().getItemInMainHand());
+			ItemMeta metaDisc = disc.getItemMeta();
+			PersistentDataContainer dataDisc = metaDisc.getPersistentDataContainer();
             NamespacedKey key = new NamespacedKey("customdiscs", "customdisc");
             String currentValue = dataDisc.get(key, PersistentDataType.STRING);
             if (currentValue != null) {
-                String newExtensionValue = currentValue.replaceFirst("\\.[^.]+$", ".mp3");
+                String newExtensionValue = currentValue.replaceFirst("\\.[^.]+$", ".wav");
                 dataDisc.set(key, PersistentDataType.STRING, newExtensionValue);
                 player.sendMessage(Component.text("AP2CD - New disc filename is: " + newExtensionValue + "."));
             } else {
                 player.sendMessage(Component.text("AP2CD - No 'customdisc' value found to update."));
             }
-            player.getInventory().getItemInMainHand().setItemMeta(metaDisc);
-        } else if (resultIsHorn) {
-            ItemStack horn = new ItemStack(player.getInventory().getItemInMainHand());
-            ItemMeta metaHorn = horn.getItemMeta();
-            PersistentDataContainer dataHorn = metaHorn.getPersistentDataContainer();
+			player.getInventory().getItemInMainHand().setItemMeta(metaDisc);
+		} else if (resultIsHorn) {
+			ItemStack horn = new ItemStack(player.getInventory().getItemInMainHand());
+			ItemMeta metaHorn = horn.getItemMeta();
+			PersistentDataContainer dataHorn = metaHorn.getPersistentDataContainer();
             NamespacedKey key = new NamespacedKey("customdiscs", "customhorn");
             String currentValue = dataHorn.get(key, PersistentDataType.STRING);
             if (currentValue != null) {
-                String newExtensionValue = currentValue.replaceFirst("\\.[^.]+$", ".mp3");
+                String newExtensionValue = currentValue.replaceFirst("\\.[^.]+$", ".wav");
                 dataHorn.set(key, PersistentDataType.STRING, newExtensionValue);
                 player.sendMessage(Component.text("AP2CD - New horn filename is: " + newExtensionValue + "."));
             } else {
                 player.sendMessage(Component.text("AP2CD - No 'customhorn' value found to update."));
             }
-            player.getInventory().getItemInMainHand().setItemMeta(metaHorn);
-        } else {
-            ItemStack head = new ItemStack(player.getInventory().getItemInMainHand());
-            ItemMeta metaHead = head.getItemMeta();
-            PersistentDataContainer dataHead = metaHead.getPersistentDataContainer();
+			player.getInventory().getItemInMainHand().setItemMeta(metaHorn);
+		} else {
+			ItemStack head = new ItemStack(player.getInventory().getItemInMainHand());
+			ItemMeta metaHead = head.getItemMeta();
+			PersistentDataContainer dataHead = metaHead.getPersistentDataContainer();
             NamespacedKey key = new NamespacedKey("customdiscs", "customhead");
             String currentValue = dataHead.get(key, PersistentDataType.STRING);
             if (currentValue != null) {
-                String newExtensionValue = currentValue.replaceFirst("\\.[^.]+$", ".mp3");
+                String newExtensionValue = currentValue.replaceFirst("\\.[^.]+$", ".wav");
                 dataHead.set(key, PersistentDataType.STRING, newExtensionValue);
                 player.sendMessage(Component.text("AP2CD - New head filename is: " + newExtensionValue + "."));
             } else {
                 player.sendMessage(Component.text("AP2CD - No 'customhead' value found to update."));
             }
-            player.getInventory().getItemInMainHand().setItemMeta(metaHead);
-        }
+			player.getInventory().getItemInMainHand().setItemMeta(metaHead);
+		}
 		return 1;
 	}
 	

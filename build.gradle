@@ -26,11 +26,11 @@ processResources {
 dependencies {
     paperweight.paperDevBundle("${bukkit_version}")
     shadow "dev.jorel:commandapi-paper-shade:${command_api_version}"
+    compileOnly "net.dmulloy2:ProtocolLib:5.4.0"
 }
 
 repositories {
     mavenCentral()
-    // You need this maven repository if you want to use the paper dependency
     maven {
         name = "papermc"
         url = uri("https://repo.papermc.io/repository/maven-public/")

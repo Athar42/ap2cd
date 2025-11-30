@@ -1,0 +1,8 @@
+# [AP2CD Config]
+
+# Disable or enable the automatic conversion process while items are being used.
+automaticConvert: false
+
+# Debug Mode - To display some more logging and Stack Trace information.
+# You SHOULD NOT turn this on, unless you want to be spammed by a lot of messages (console and player side).
+debugMode: false

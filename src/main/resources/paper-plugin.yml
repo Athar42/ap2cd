@@ -7,3 +7,10 @@ website: https://github.com/Athar42/ap2cd
 api-version: '${bukkit_api_version}'
 bootstrapper: me.Athar42.ap2cd.AudioPlayer2CustomDiscsBootstrap
 folia-supported: true
+
+dependencies:
+  server:
+    ProtocolLib:
+      load: BEFORE
+      required: true
+      join-classpath: true

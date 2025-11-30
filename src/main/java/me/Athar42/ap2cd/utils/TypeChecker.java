@@ -16,11 +16,11 @@ public class TypeChecker {
     }
 
     public static boolean isGoatHornPlayer(Player p) {
-        return p.getInventory().getItemInMainHand().getType().equals(Material.GOAT_HORN);
+        return p.getInventory().getItemInMainHand().getType().equals(Material.GOAT_HORN) || p.getInventory().getItemInOffHand().getType().equals(Material.GOAT_HORN);
     }
 
     public static boolean isHeadPlayer(Player p) {
-        return p.getInventory().getItemInMainHand().getType().equals(Material.PLAYER_HEAD);
+        return p.getInventory().getItemInMainHand().getType().equals(Material.PLAYER_HEAD) || p.getInventory().getItemInOffHand().getType().equals(Material.PLAYER_HEAD);
     }
 
     public static boolean isConverted(ItemStack item, JavaPlugin plugin) {
@@ -32,7 +32,7 @@ public class TypeChecker {
         NamespacedKey key = new NamespacedKey(plugin, "converted");
 
         Boolean value = data.get(key, PersistentDataType.BOOLEAN);
-        return value != null && value;
+        return Boolean.TRUE.equals(value);
     }
 
 }
