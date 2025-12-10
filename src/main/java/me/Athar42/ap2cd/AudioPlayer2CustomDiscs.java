@@ -51,8 +51,6 @@ public final class AudioPlayer2CustomDiscs extends JavaPlugin {
 		AudioPlayer2CustomDiscs.instance = this;
 
         CommandAPI.onLoad(new CommandAPIPaperConfig(this).verboseOutput(true).fallbackToLatestNMS(true));
-
-		new AudioPlayer2CustomDiscsCommand(this).register("audioplayer2customdiscs");
 	}
 
 	@Override
@@ -60,6 +58,8 @@ public final class AudioPlayer2CustomDiscs extends JavaPlugin {
 		pluginLogger = getLogger();
 		
 		CommandAPI.onEnable();
+
+        new AudioPlayer2CustomDiscsCommand(this).register("audioplayer2customdiscs");
 
         this.saveDefaultConfig();
 

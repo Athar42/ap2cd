@@ -1,6 +1,6 @@
-# AudioPlayer To CustomDiscs v1.1.0
+# AudioPlayer To CustomDiscs v1.1.1
 ### For Paper and Folia
-### 1.21.7 to 1.21.10
+### 1.21.11
 
 ---
 
@@ -46,8 +46,9 @@ In such rare scenario, you can use one of those commands while holding the item 
 
 | Minecraft version                          | Server type     | Compatible versions        | Latest compatible<br>version                                                  |
 |--------------------------------------------|-----------------|----------------------------|-------------------------------------------------------------------------------|
-| **1.21.7-9, 1.21.8**<br>**1.21.8**         | Paper<br>Folia  | 1.0.0-1.1.0<br>1.0.0-1.1.0 | [1.1.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.0) |
-| **1.21.9, 1.21.10**<br>**1.21.9, 1.21.10** | Paper<br>Folia  | 1.0.0-1.1.0<br>1.0.0-1.1.0 | [1.1.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.0) |
+| **1.21.7-9, 1.21.8**<br>**1.21.8**         | Paper<br>Folia  | 1.0.0-1.1.1<br>1.0.0-1.1.1 | [1.1.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.1) |
+| **1.21.9, 1.21.10**<br>**1.21.9, 1.21.10** | Paper<br>Folia  | 1.0.0-1.1.1<br>1.0.0-1.1.1 | [1.1.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.1) |
+| **1.21.11**<br>**1.21.11**                 | Paper<br>Folia  | 1.1.1<br>1.1.1             | [1.1.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.1) |
 
 ---
 
