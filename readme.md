@@ -1,6 +1,6 @@
 # AudioPlayer To CustomDiscs v1.1.3
 ### For Paper and Folia
-### 1.21.11
+### 1.21.7 to 1.21.11
 
 [![GitHub Total Downloads](https://img.shields.io/github/downloads/Athar42/ap2cd/total?style=plastic&label=GitHub%20Downloads&color=success "Click here to download the plugin")](https://modrinth.com/plugin/audioplayer-to-customdiscs) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Modrinth Downloads](https://img.shields.io/modrinth/dt/audioplayer-to-customdiscs?style=plastic&label=Modrinth%20Downloads&color=success "Click here to download the plugin")](https://modrinth.com/plugin/audioplayer-to-customdiscs) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![AudioPlayer-to-CustomDiscs](https://img.shields.io/hangar/dt/AudioPlayer-to-CustomDiscs?link=https%3A%2F%2Fhangar.papermc.io%2FAtharDev%2FAudioPlayer-to-CustomDiscs&style=plastic&label=Hangar%20Downloads&color=success)](https://hangar.papermc.io/AtharDev/AudioPlayer-to-CustomDiscs)
 
