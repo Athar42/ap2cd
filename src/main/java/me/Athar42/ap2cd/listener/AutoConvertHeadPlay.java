@@ -3,6 +3,7 @@ package me.Athar42.ap2cd.listener;
 import me.Athar42.ap2cd.AudioPlayer2CustomDiscs;
 import me.Athar42.ap2cd.command.SubCommands.Convert;
 import me.Athar42.ap2cd.utils.AP2CDUtils;
+import me.Athar42.ap2cd.utils.TypeChecker;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -53,7 +54,9 @@ public class AutoConvertHeadPlay implements Listener {
         if (noteBlock.getType() != Material.NOTE_BLOCK) return;
 
         Block headBlock = noteBlock.getRelative(BlockFace.UP);
-        if (headBlock.getType() != Material.PLAYER_HEAD) return;
+        if (!TypeChecker.isHead(headBlock.getType())) return;
+
+        Material headTypeMaterial = headBlock.getType();
 
         Skull headSkull = (Skull) headBlock.getState();
         PersistentDataContainer headPDCdata = headSkull.getPersistentDataContainer();
@@ -65,7 +68,7 @@ public class AutoConvertHeadPlay implements Listener {
             return;
         }
 
-        ItemStack skullItemStack = new ItemStack(Material.PLAYER_HEAD);
+        ItemStack skullItemStack = new ItemStack(headTypeMaterial);
         SkullMeta skullMeta = (SkullMeta) skullItemStack.getItemMeta();
         if (headSkull.getProfile() != null && headSkull.getProfile().name() != null && !headSkull.getProfile().name().isEmpty()) {
             String playerName = headSkull.getProfile().name();
@@ -173,7 +176,7 @@ public class AutoConvertHeadPlay implements Listener {
 
         ItemStack item = event.getItemInHand();
 
-        if (item.getType() != Material.PLAYER_HEAD) return;
+        if (!TypeChecker.isHead(item.getType())) return;
         if (!(item.getItemMeta() instanceof SkullMeta meta)) return;
 
         net.minecraft.world.item.ItemStack itemCopyAsNMS = CraftItemStack.asNMSCopy(item);
@@ -271,9 +274,8 @@ public class AutoConvertHeadPlay implements Listener {
         }
 
         Block block = event.getBlockPlaced();
+        if (!TypeChecker.isHead(block.getType()) && !TypeChecker.isWallHead(block.getType())) return; //TODO : For later review if we still need a Wall Head/Skull check
         Bukkit.getRegionScheduler().runDelayed(plugin, block.getLocation(), task -> {
-            if (block.getType() != Material.PLAYER_HEAD && block.getType() != Material.PLAYER_WALL_HEAD) return;
-
             setHeadMeta(block, convertedFilename, retrievedRangeValue);
 
             if (isDebugEnabled()) pluginLogger.info("AP2CD-DEBUG-029 - Item has been converted!");
