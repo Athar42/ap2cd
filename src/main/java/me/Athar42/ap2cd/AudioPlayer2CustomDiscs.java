@@ -93,7 +93,13 @@ public final class AudioPlayer2CustomDiscs extends JavaPlugin {
                         .color(NamedTextColor.BLUE)
                         .decorate(TextDecoration.UNDERLINED)
                         .clickEvent(ClickEvent.openUrl("https://github.com/Athar42/ap2cd"))
-                        .hoverEvent(HoverEvent.showText(Component.text("Click to open AudioPlayer2CustomDiscs' GitHub page"))))
+                        .hoverEvent(HoverEvent.showText(Component.text("Click to open AudioPlayer2CustomDiscs' GitHub page")))),
+                LegacyComponentAmpersand.deserialize("&aDiscord&7: ")
+                        .append(Component.text("https://discord.gg/rJtBRmRFCr")
+                        .color(NamedTextColor.BLUE)
+                        .decorate(TextDecoration.UNDERLINED)
+                        .clickEvent(ClickEvent.openUrl("https://discord.gg/rJtBRmRFCr"))
+                        .hoverEvent(HoverEvent.showText(Component.text("Click to join our Discord !"))))
         };
 
         if (automaticConvertMode) {

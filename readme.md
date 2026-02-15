@@ -14,6 +14,8 @@ Release 1.1.0 introduce the automatic conversion ! (Manual conversion mode is st
 
 Also, no permission system is in place for now (unless requested).
 
+Join the discord for support: https://discord.gg/rJtBRmRFCr.
+
 ---
 
 ## How to use
