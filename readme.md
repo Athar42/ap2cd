@@ -1,8 +1,14 @@
-# AudioPlayer To CustomDiscs v1.1.4
+# AudioPlayer To CustomDiscs v1.1.5
 ### For Paper and Folia
 ### 1.21.7 to 1.21.11
 
 [![GitHub Total Downloads](https://img.shields.io/github/downloads/Athar42/ap2cd/total?style=plastic&label=GitHub%20Downloads&color=success "Click here to download the plugin")](https://modrinth.com/plugin/audioplayer-to-customdiscs) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Modrinth Downloads](https://img.shields.io/modrinth/dt/audioplayer-to-customdiscs?style=plastic&label=Modrinth%20Downloads&color=success "Click here to download the plugin")](https://modrinth.com/plugin/audioplayer-to-customdiscs) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![AudioPlayer-to-CustomDiscs](https://img.shields.io/hangar/dt/AudioPlayer-to-CustomDiscs?link=https%3A%2F%2Fhangar.papermc.io%2FAtharDev%2FAudioPlayer-to-CustomDiscs&style=plastic&label=Hangar%20Downloads&color=success)](https://hangar.papermc.io/AtharDev/AudioPlayer-to-CustomDiscs)
+
+---
+
+## ⚠️ Dependency change — PacketEvents now required
+**As of version 1.1.5, this plugin now requires [PacketEvents](https://modrinth.com/plugin/packetevents) (tested with 2.11.2) as a dependency.**
+ProtocolLib is no longer used and is no longer required.
 
 ---
 
@@ -50,9 +56,9 @@ In such rare scenario, you can use one of those commands while holding the item 
 
 | Minecraft version                          | Server type     | Compatible versions        | Latest compatible<br>version                                                  |
 |--------------------------------------------|-----------------|----------------------------|-------------------------------------------------------------------------------|
-| **1.21.7-9, 1.21.8**<br>**1.21.8**         | Paper<br>Folia  | 1.0.0-1.1.4<br>1.0.0-1.1.4 | [1.1.4](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.4) |
-| **1.21.9, 1.21.10**<br>**1.21.9, 1.21.10** | Paper<br>Folia  | 1.0.0-1.1.4<br>1.0.0-1.1.4 | [1.1.4](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.4) |
-| **1.21.11**<br>**1.21.11**                 | Paper<br>Folia  | 1.1.1<br>1.1.4             | [1.1.4](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.4) |
+| **1.21.7-9, 1.21.8**<br>**1.21.8**         | Paper<br>Folia  | 1.0.0-1.1.5<br>1.0.0-1.1.5 | [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) |
+| **1.21.9, 1.21.10**<br>**1.21.9, 1.21.10** | Paper<br>Folia  | 1.0.0-1.1.5<br>1.0.0-1.1.5 | [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) |
+| **1.21.11**<br>**1.21.11**                 | Paper<br>Folia  | 1.1.1<br>1.1.5             | [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) |
 
 ---
 
@@ -60,6 +66,8 @@ In such rare scenario, you can use one of those commands while holding the item 
 
 This plugin may **(or may not)** work with earlier versions of PaperMC/Folia.
 
-Version 1.1.0+ now require ProtocolLib to be installed too.
+Version 1.1.0+ now requires ProtocolLib to be installed too (until version 1.1.4 included).
+
+⚠️ Version 1.1.5+ now requires [PacketEvents](https://modrinth.com/plugin/packetevents) (tested with release 2.11.2). **If not used anywhere else**, you can safely remove ProtocolLib.
 
 **This plugin will now be made available on both Modrinth and Hangar (PaperMC).**

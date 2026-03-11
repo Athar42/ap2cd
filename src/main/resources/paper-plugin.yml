@@ -10,7 +10,7 @@ folia-supported: true
 
 dependencies:
   server:
-    ProtocolLib:
+    packetevents:
       load: BEFORE
       required: true
       join-classpath: true

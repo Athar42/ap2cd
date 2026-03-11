@@ -1,21 +1,23 @@
 package me.Athar42.ap2cd;
 
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import me.Athar42.ap2cd.command.AudioPlayer2CustomDiscsCommand;
 import me.Athar42.ap2cd.listener.AutoConvertJukeBox;
 import me.Athar42.ap2cd.listener.AutoConvertHeadPlay;
+import me.Athar42.ap2cd.utils.AP2CDUtils;
+import me.Athar42.ap2cd.utils.TypeChecker;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIPaperConfig;
 
-import me.Athar42.ap2cd.utils.AP2CDUtils;
-import me.Athar42.ap2cd.utils.TypeChecker;
+import io.github.retrooper.packetevents.factory.spigot.SpigotPacketEventsBuilder;
+import com.github.retrooper.packetevents.PacketEvents;
+import com.github.retrooper.packetevents.event.PacketListenerAbstract;
+import com.github.retrooper.packetevents.event.PacketListenerPriority;
+import com.github.retrooper.packetevents.event.PacketReceiveEvent;
+import com.github.retrooper.packetevents.protocol.packettype.PacketType;
+import com.github.retrooper.packetevents.protocol.player.InteractionHand;
+import com.github.retrooper.packetevents.wrapper.play.client.WrapperPlayClientUseItem;
+
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -32,6 +34,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jspecify.annotations.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.logging.Logger;
@@ -50,12 +53,17 @@ public final class AudioPlayer2CustomDiscs extends JavaPlugin {
 	public void onLoad() {
 		AudioPlayer2CustomDiscs.instance = this;
 
+        PacketEvents.setAPI(SpigotPacketEventsBuilder.build(this));
+        PacketEvents.getAPI().load();
+
         CommandAPI.onLoad(new CommandAPIPaperConfig(this).verboseOutput(true).fallbackToLatestNMS(true));
 	}
 
 	@Override
 	public void onEnable() {
 		pluginLogger = getLogger();
+
+        PacketEvents.getAPI().init();
 		
 		CommandAPI.onEnable();
 
@@ -106,71 +114,71 @@ public final class AudioPlayer2CustomDiscs extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new AutoConvertJukeBox(), this);
             getServer().getPluginManager().registerEvents(new AutoConvertHeadPlay(), this);
 
-            ProtocolManager protocolManager = ProtocolLibrary.getProtocolManager();
-            protocolManager.addPacketListener(new PacketAdapter(instance, ListenerPriority.NORMAL, PacketType.Play.Client.USE_ITEM) {
-                @Override
-                public void onPacketReceiving(PacketEvent event) {
-                    if (event.getPlayer() == null) return;
-                    Player player = event.getPlayer();
-                    if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-001 - INSIDE NEW PACKET EVENT."));
-                    EnumWrappers.Hand hand = null;
-                    try {
-                        hand = event.getPacket().getEnumModifier(EnumWrappers.Hand.class, 0).readSafely(0);
-                    } catch (Exception ignored) {
-                        return;
-                    }
-                    ItemStack item;
-                    if (hand == EnumWrappers.Hand.OFF_HAND) {
-                        item = player.getInventory().getItemInOffHand();
-                        if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-002A - OFFHAND DETECTED."));
-                    } else {
-                        item = player.getInventory().getItemInMainHand();
-                        if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-002B - MAINHAND DETECTED."));
-                    }
+            PacketEvents.getAPI().getEventManager().registerListeners(
+                new PacketListenerAbstract(PacketListenerPriority.NORMAL) {
+                    @Override
+                    public void onPacketReceive(@NonNull PacketReceiveEvent event) {
+                        if (event.getPacketType() != PacketType.Play.Client.USE_ITEM) return;
 
-                    if (!TypeChecker.isGoatHornPlayer(player)) return;
+                        Player player = event.getPlayer();
+                        if (player == null) return;
+                        if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-001 - INSIDE NEW PACKET EVENT."));
 
-                    ItemMeta meta = item.getItemMeta();
-                    if (meta == null) return;
-                    PersistentDataContainer data = meta.getPersistentDataContainer();
-                    NamespacedKey convertedKeyRetrieval = new NamespacedKey(plugin, "converted");
+                        WrapperPlayClientUseItem wrapper = new WrapperPlayClientUseItem(event);
+                        InteractionHand hand = wrapper.getHand();
 
-                    if (data.has(convertedKeyRetrieval, PersistentDataType.BOOLEAN) && Boolean.TRUE.equals(data.get(convertedKeyRetrieval, PersistentDataType.BOOLEAN))) {
-                        if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-003 - Already converted!"));
-                        return;
-                    }
-
-                    EnumWrappers.Hand hand2 = hand;
-                    Bukkit.getGlobalRegionScheduler().run(plugin, scheduledTask -> {
-                        boolean mainOffHand;
-                        ItemStack item2;
-                        if (hand2 == EnumWrappers.Hand.OFF_HAND) {
-                            item2 = player.getInventory().getItemInOffHand();
-                            mainOffHand = false;
-                            if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-004A - OFFHAND DETECTED 2."));
+                        ItemStack item;
+                        if (hand == InteractionHand.OFF_HAND) {
+                            item = player.getInventory().getItemInOffHand();
+                            if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-002A - OFFHAND DETECTED."));
                         } else {
-                            item2 = player.getInventory().getItemInMainHand();
-                            mainOffHand = true;
-                            if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-004B - MAINHAND DETECTED 2."));
+                            item = player.getInventory().getItemInMainHand();
+                            if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-002B - MAINHAND DETECTED."));
                         }
-                        boolean converted = AP2CDUtils.convertHornIfNeeded(item2, player, instance, mainOffHand);
-                        if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-005 - Converted result: "+ converted + "."));
-                        if (converted) {
-                            if (mainOffHand) {
-                                player.getInventory().setItemInMainHand(item2);
-                                player.setCooldown(Material.GOAT_HORN, 0);
-                                if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-006A - Goat horn converted from MAINHAND."));
+
+                        if (!TypeChecker.isGoatHornPlayer(player)) return;
+
+                        ItemMeta meta = item.getItemMeta();
+                        if (meta == null) return;
+                        PersistentDataContainer data = meta.getPersistentDataContainer();
+                        NamespacedKey convertedKeyRetrieval = new NamespacedKey(instance, "converted");
+
+                        if (data.has(convertedKeyRetrieval, PersistentDataType.BOOLEAN) && Boolean.TRUE.equals(data.get(convertedKeyRetrieval, PersistentDataType.BOOLEAN))) {
+                            if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-003 - Already converted!"));
+                            return;
+                        }
+
+                        Bukkit.getGlobalRegionScheduler().run(instance, scheduledTask -> {
+                            boolean mainOffHand;
+                            ItemStack item2;
+                            if (hand == InteractionHand.OFF_HAND) {
+                                item2 = player.getInventory().getItemInOffHand();
+                                mainOffHand = false;
+                                if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-004A - OFFHAND DETECTED 2."));
                             } else {
-                                player.getInventory().setItemInOffHand(item2);
-                                player.setCooldown(Material.GOAT_HORN, 0);
-                                if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-006B - Goat horn converted from OFFHAND."));
+                                item2 = player.getInventory().getItemInMainHand();
+                                mainOffHand = true;
+                                if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-004B - MAINHAND DETECTED 2."));
                             }
-                        } else {
-                            if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-007 - Goat horn NOT converted."));
-                        }
-                    });
+                            boolean converted = AP2CDUtils.convertHornIfNeeded(item2, player, instance, mainOffHand);
+                            if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-005 - Converted result: " + converted + "."));
+                            if (converted) {
+                                if (mainOffHand) {
+                                    player.getInventory().setItemInMainHand(item2);
+                                    player.setCooldown(Material.GOAT_HORN, 0);
+                                    if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-006A - Goat horn converted from MAINHAND."));
+                                } else {
+                                    player.getInventory().setItemInOffHand(item2);
+                                    player.setCooldown(Material.GOAT_HORN, 0);
+                                    if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-006B - Goat horn converted from OFFHAND."));
+                                }
+                            } else {
+                                if (debugMode) player.sendMessage(Component.text("AP2CD-DEBUG-007 - Goat horn NOT converted."));
+                            }
+                        });
+                    }
                 }
-            });
+            );
         }
 		
         pluginLogger.info("Successfully registered AudioPlayer2CustomDiscs plugin!");
@@ -179,6 +187,7 @@ public final class AudioPlayer2CustomDiscs extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+        PacketEvents.getAPI().terminate();
 		CommandAPI.onDisable();
         if(pluginLogger != null) pluginLogger.info("Successfully unregistered AudioPlayer2CustomDiscs plugin!");
 	}
