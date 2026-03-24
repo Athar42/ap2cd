@@ -49,8 +49,10 @@ public class AutoConvertJukeBox implements Listener {
 
         convertIfNeeded(discItemStack);
 
-        if (!event.getItem().hasData(DataComponentTypes.TOOLTIP_DISPLAY) || !event.getItem().getData(DataComponentTypes.TOOLTIP_DISPLAY).hiddenComponents().contains(DataComponentTypes.JUKEBOX_PLAYABLE)) {
-            event.getItem().setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.JUKEBOX_PLAYABLE).build());
+        if (discItemStack.getItemMeta().getPersistentDataContainer().has(new NamespacedKey("customdiscs", "customdisc"), PersistentDataType.STRING)) {
+            if (!event.getItem().hasData(DataComponentTypes.TOOLTIP_DISPLAY) || !event.getItem().getData(DataComponentTypes.TOOLTIP_DISPLAY).hiddenComponents().contains(DataComponentTypes.JUKEBOX_PLAYABLE)) {
+                event.getItem().setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.JUKEBOX_PLAYABLE).build());
+            }
         }
     }
 
@@ -66,8 +68,10 @@ public class AutoConvertJukeBox implements Listener {
 
         convertIfNeeded(discItemStack);
 
-        if (!event.getItem().hasData(DataComponentTypes.TOOLTIP_DISPLAY) || !event.getItem().getData(DataComponentTypes.TOOLTIP_DISPLAY).hiddenComponents().contains(DataComponentTypes.JUKEBOX_PLAYABLE)) {
-            event.getItem().setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.JUKEBOX_PLAYABLE).build());
+        if (discItemStack.getItemMeta().getPersistentDataContainer().has(new NamespacedKey("customdiscs", "customdisc"), PersistentDataType.STRING)) {
+            if (!event.getItem().hasData(DataComponentTypes.TOOLTIP_DISPLAY) || !event.getItem().getData(DataComponentTypes.TOOLTIP_DISPLAY).hiddenComponents().contains(DataComponentTypes.JUKEBOX_PLAYABLE)) {
+                event.getItem().setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.JUKEBOX_PLAYABLE).build());
+            }
         }
 
         event.setItem(discItemStack);

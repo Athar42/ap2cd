@@ -1,4 +1,4 @@
-# AudioPlayer To CustomDiscs v1.1.5
+# AudioPlayer To CustomDiscs v1.1.6
 ### For Paper and Folia
 ### 1.21.7 to 1.21.11
 
@@ -92,11 +92,11 @@ debugMode: false
 
 ## Version Support Matrix
 
-| Minecraft version    | Paper | Folia |
-|----------------------|-------|-------|
-| **1.21.7-9, 1.21.8** | 1.0.0 – [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) | 1.0.0 – [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) |
-| **1.21.9, 1.21.10**  | 1.0.0 – [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) | 1.0.0 – [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) |
-| **1.21.11**          | 1.1.1 – [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) | 1.1.1 – [1.1.5](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.5) |
+| Minecraft version    | Paper                                                                                 | Folia                                                                                 |
+|----------------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
+| **1.21.7-9, 1.21.8** | 1.0.0 – [1.1.6](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.6) | 1.0.0 – [1.1.6](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.6) |
+| **1.21.9, 1.21.10**  | 1.0.0 – [1.1.6](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.6) | 1.0.0 – [1.1.6](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.6) |
+| **1.21.11**          | 1.1.1 – [1.1.6](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.6) | 1.1.1 – [1.1.6](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.1.6) |
 
 ---
 
