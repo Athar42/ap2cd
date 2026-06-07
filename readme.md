@@ -1,4 +1,4 @@
-# AudioPlayer To CustomDiscs v1.2.0
+# AudioPlayer To CustomDiscs v1.2.1
 ### For Paper, Folia and Forks (Purpur, Leaf, ...)
 ### 1.21.7 to 26.1.2
 
@@ -100,10 +100,10 @@ debugMode: false
 
 | Minecraft version          | Paper & Forks (Purpur, Leaf, ...)                                                     | Folia & Forks                                                                         |
 |----------------------------|---------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| **1.21.7-9, 1.21.8**       | 1.0.0 – [1.2.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.0) | 1.0.0 – [1.2.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.0) |
-| **1.21.9, 1.21.10**        | 1.0.0 – [1.2.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.0) | 1.0.0 – [1.2.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.0) |
-| **1.21.11**                | 1.1.1 – [1.2.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.0) | 1.1.1 – [1.2.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.0) |
-| **26.1, 26.1.1, 26.1.2**   | [1.2.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.0)         | [1.2.0](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.0)         |
+| **1.21.7-9, 1.21.8**       | 1.0.0 – [1.2.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.1) | 1.0.0 – [1.2.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.1) |
+| **1.21.9, 1.21.10**        | 1.0.0 – [1.2.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.1) | 1.0.0 – [1.2.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.1) |
+| **1.21.11**                | 1.1.1 – [1.2.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.1) | 1.1.1 – [1.2.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.1) |
+| **26.1, 26.1.1, 26.1.2**   | [1.2.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.1)         | [1.2.1](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.1)         |
 
 ---
 

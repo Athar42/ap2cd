@@ -36,13 +36,11 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
 
-import javax.annotation.Nullable;
 import java.util.logging.Logger;
 
 public final class AudioPlayer2CustomDiscs extends JavaPlugin {
 	static AudioPlayer2CustomDiscs instance;
 
-	@Nullable
 	private Logger pluginLogger;
     private static Component[] helpMessage;
     private static final LegacyComponentSerializer LegacyComponentAmpersand = LegacyComponentSerializer.legacyAmpersand();

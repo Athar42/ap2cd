@@ -2,6 +2,10 @@ package me.Athar42.ap2cd.command.SubCommands;
 
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.TooltipDisplay;
+import io.papermc.paper.registry.RegistryKey;
+import io.papermc.paper.registry.TypedKey;
+import io.papermc.paper.registry.keys.InstrumentKeys;
+import io.papermc.paper.registry.keys.SoundEventKeys;
 import me.Athar42.ap2cd.AudioPlayer2CustomDiscs;
 import me.Athar42.ap2cd.utils.AP2CDUtils;
 import me.Athar42.ap2cd.utils.TypeChecker;
@@ -10,7 +14,6 @@ import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.executors.CommandArguments;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
@@ -28,10 +31,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import javax.annotation.Nullable;
 import java.io.File;
-import java.util.UUID;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -243,10 +243,12 @@ public class Convert extends CommandAPICommand {
         }
         discItemStack.setData(DataComponentTypes.TOOLTIP_DISPLAY, TooltipDisplay.tooltipDisplay().addHiddenComponents(DataComponentTypes.JUKEBOX_PLAYABLE).build());
         ItemMeta discMeta = discItemStack.getItemMeta();
-        @Nullable List<Component> itemLore = new ArrayList<>();
-        final TextComponent customLoreSong = Component.text().decoration(TextDecoration.ITALIC, false).content("AudioPlayer converted disc").color(NamedTextColor.GRAY).build();
-        itemLore.add(customLoreSong);
-        discMeta.lore(itemLore);
+        List<Component> existingDiscLore = discMeta.lore();
+        if (existingDiscLore == null || existingDiscLore.isEmpty()) {
+            List<Component> itemLore = new ArrayList<>();
+            itemLore.add(resolveDisplayText(discMeta, "AudioPlayer converted disc"));
+            discMeta.lore(itemLore);
+        }
 
         PersistentDataContainer discPDCdata = discMeta.getPersistentDataContainer();
         discPDCdata.set(new NamespacedKey("customdiscs", "customdisc"), PersistentDataType.STRING, convertedFilename);
@@ -259,16 +261,40 @@ public class Convert extends CommandAPICommand {
         } else {
             player.getInventory().getItemInOffHand().setItemMeta(discMeta);
         }
+        ItemStack actualDiscItem = isMainOffHand ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
+        if (actualDiscItem instanceof CraftItemStack discItemActual) {
+            net.minecraft.world.item.ItemStack itemAsNMS = discItemActual.handle;
+            if (itemAsNMS.has(DataComponents.CUSTOM_DATA)) {
+                CompoundTag tag = itemAsNMS.get(DataComponents.CUSTOM_DATA).copyTag();
+                tag.remove("CustomSound");
+                tag.remove("CustomSoundRange");
+                tag.remove("audioplayer");
+                if (tag.isEmpty()) {
+                    itemAsNMS.remove(DataComponents.CUSTOM_DATA);
+                } else {
+                    itemAsNMS.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                }
+            }
+        }
     }
 
     public void setHornMeta(Player player, boolean isMainOffHand, String convertedFilename, Float retrievedRangeValue) {
-        ItemStack hornItemStack;
-        if (isMainOffHand) {
-            hornItemStack = new ItemStack(player.getInventory().getItemInMainHand());
-        } else {
-            hornItemStack = new ItemStack(player.getInventory().getItemInOffHand());
-        }
-        ItemMeta hornMeta = hornItemStack.getItemMeta();
+        ItemStack actualHornItem = isMainOffHand ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand();
+
+        final Component instrumentDescription = resolveDisplayText(new ItemStack(actualHornItem).getItemMeta(), "AudioPlayer converted horn");
+
+        final float hornRange = (retrievedRangeValue != null) ? retrievedRangeValue : 256.0f;
+        MusicInstrument updatedInstrument = MusicInstrument.create(builder ->
+                builder.copyFrom(InstrumentKeys.ADMIRE_GOAT_HORN)
+                        .description(instrumentDescription)
+                        .range(hornRange)
+                        .duration(1.0f)
+                        .soundEvent(TypedKey.create(RegistryKey.SOUND_EVENT, SoundEventKeys.INTENTIONALLY_EMPTY))
+        );
+        actualHornItem.setData(DataComponentTypes.INSTRUMENT, updatedInstrument);
+
+        ItemStack hornCopy = new ItemStack(isMainOffHand ? player.getInventory().getItemInMainHand() : player.getInventory().getItemInOffHand());
+        ItemMeta hornMeta = hornCopy.getItemMeta();
         PersistentDataContainer hornPDCdata = hornMeta.getPersistentDataContainer();
         hornPDCdata.set(new NamespacedKey("customdiscs", "customhorn"), PersistentDataType.STRING, convertedFilename);
         hornPDCdata.set(new NamespacedKey("customdiscs", "goat_horn_cooldown"), PersistentDataType.INTEGER, 20);
@@ -281,12 +307,23 @@ public class Convert extends CommandAPICommand {
         } else {
             player.getInventory().getItemInOffHand().setItemMeta(hornMeta);
         }
+        if (actualHornItem instanceof CraftItemStack hornItemActual) {
+            net.minecraft.world.item.ItemStack itemAsNMS = hornItemActual.handle;
+            if (itemAsNMS.has(DataComponents.CUSTOM_DATA)) {
+                CompoundTag tag = itemAsNMS.get(DataComponents.CUSTOM_DATA).copyTag();
+                tag.remove("CustomSound");
+                tag.remove("CustomSoundRange");
+                tag.remove("audioplayer");
+                if (tag.isEmpty()) {
+                    itemAsNMS.remove(DataComponents.CUSTOM_DATA);
+                } else {
+                    itemAsNMS.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                }
+            }
+        }
     }
 
     public void setHeadMeta(Player player, boolean isMainOffHand, String convertedFilename, Float retrievedRangeValue) {
-        final Component headCustomLore = Component.text().decoration(TextDecoration.ITALIC, false).content("AudioPlayer converted head").color(NamedTextColor.GRAY).build();
-        String serializedComponent = GsonComponentSerializer.gson().serialize(headCustomLore);
-
         ItemStack headItemStack;
         if (isMainOffHand) {
             headItemStack = new ItemStack(player.getInventory().getItemInMainHand());
@@ -294,10 +331,18 @@ public class Convert extends CommandAPICommand {
             headItemStack = new ItemStack(player.getInventory().getItemInOffHand());
         }
         ItemMeta headMeta = headItemStack.getItemMeta();
-        @Nullable List<Component> itemLore = new ArrayList<>();
-        final TextComponent customLoreSong = Component.text().decoration(TextDecoration.ITALIC, false).content("AudioPlayer converted head").color(NamedTextColor.GRAY).build();
-        itemLore.add(customLoreSong);
-        headMeta.lore(itemLore);
+
+        Component headCustomLore;
+        List<Component> existingHeadLore = headMeta.lore();
+        if (existingHeadLore == null || existingHeadLore.isEmpty()) {
+            headCustomLore = resolveDisplayText(headMeta, "AudioPlayer converted head");
+            List<Component> itemLore = new ArrayList<>();
+            itemLore.add(headCustomLore);
+            headMeta.lore(itemLore);
+        } else {
+            headCustomLore = existingHeadLore.get(0);
+        }
+        String serializedComponent = GsonComponentSerializer.gson().serialize(headCustomLore);
 
         PersistentDataContainer headPDCdata = headMeta.getPersistentDataContainer();
         headPDCdata.set(new NamespacedKey("customdiscs", "customhead"), PersistentDataType.STRING, convertedFilename);
@@ -311,6 +356,31 @@ public class Convert extends CommandAPICommand {
         } else {
             player.getInventory().getItemInOffHand().setItemMeta(headMeta);
         }
+        ItemStack actualHeadItem = isMainOffHand
+                ? player.getInventory().getItemInMainHand()
+                : player.getInventory().getItemInOffHand();
+        if (actualHeadItem instanceof CraftItemStack headItemActual) {
+            net.minecraft.world.item.ItemStack itemAsNMS = headItemActual.handle;
+            if (itemAsNMS.has(DataComponents.CUSTOM_DATA)) {
+                CompoundTag tag = itemAsNMS.get(DataComponents.CUSTOM_DATA).copyTag();
+                tag.remove("CustomSound");
+                tag.remove("CustomSoundRange");
+                tag.remove("audioplayer");
+                if (tag.isEmpty()) {
+                    itemAsNMS.remove(DataComponents.CUSTOM_DATA);
+                } else {
+                    itemAsNMS.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                }
+            }
+        }
+    }
+
+    static Component resolveDisplayText(ItemMeta meta, String fallback) {
+        List<Component> lore = meta.lore();
+        if (lore != null && !lore.isEmpty()) return lore.get(0);
+        Component name = meta.displayName();
+        if (name != null) return name;
+        return Component.text().decoration(TextDecoration.ITALIC, false).content(fallback).color(NamedTextColor.GRAY).build();
     }
 
     public static String extractUUIDFromAudioPlayer(String json) {

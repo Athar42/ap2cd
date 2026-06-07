@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -17,7 +16,7 @@ public class AP2CDUtils {
     static AudioPlayer2CustomDiscs plugin = AudioPlayer2CustomDiscs.getInstance();
     private static final Logger pluginLogger = plugin.getLogger();
 
-    public static @Nullable String findSoundFile(File folder, UUID uuid) {
+    public static String findSoundFile(File folder, UUID uuid) {
         for (String ext : new String[]{"flac", "mp3", "wav"}) {
             File f = new File(folder, uuid + "." + ext);
             if (f.isFile()) return f.getName();

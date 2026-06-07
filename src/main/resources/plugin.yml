@@ -5,4 +5,7 @@ api-version: '${bukkit_api_version}'
 prefix: AudioPlayer2CustomDiscs
 authors: [ "Athar42" ]
 website: https://github.com/Athar42/ap2cd
+modrinth-project-id: "uGyuzT6k"
+hangar-project-slug: "AudioPlayer-to-CustomDiscs"
+github-repo: "Athar42/ap2cd"
 description: A Paper plugin to convert AudioPlayer custom items (music discs, goat horns and player heads) to be playable with CustomDiscs.

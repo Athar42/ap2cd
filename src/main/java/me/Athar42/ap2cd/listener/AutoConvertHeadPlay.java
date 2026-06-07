@@ -37,6 +37,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -166,7 +167,37 @@ public class AutoConvertHeadPlay implements Listener {
             return;
         }
 
-        setHeadMeta(headBlock, convertedFilename, retrievedRangeValue);
+        Component headLoreFromBlock = null;
+
+        if (headComponents.contains("minecraft:lore")) {
+            Optional<ListTag> loreListOptional = headComponents.getList("minecraft:lore");
+            if (loreListOptional.isPresent()) {
+                ListTag loreList = loreListOptional.get();
+                if (!loreList.isEmpty()) {
+                    Optional<String> firstLoreJsonOptional = loreList.getString(0);
+                    if (firstLoreJsonOptional.isPresent()) {
+                        try {
+                            headLoreFromBlock = GsonComponentSerializer.gson().deserialize(firstLoreJsonOptional.get());
+                        } catch (Exception ignored) {
+                            if (isDebugEnabled()) pluginLogger.info("AP2CD-DEBUG-019.1A - Could not deserialize 'minecraft:lore'[0].");
+                        }
+                    }
+                }
+            }
+        }
+
+        if (headLoreFromBlock == null) {
+            Optional<String> customNameJsonOptional = headComponents.getString("minecraft:custom_name");
+            if (customNameJsonOptional.isPresent()) {
+                try {
+                    headLoreFromBlock = GsonComponentSerializer.gson().deserialize(customNameJsonOptional.get());
+                } catch (Exception ignored) {
+                    if (isDebugEnabled()) pluginLogger.info("AP2CD-DEBUG-019.1B - Could not deserialize 'minecraft:custom_name'.");
+                }
+            }
+        }
+
+        setHeadMeta(headBlock, convertedFilename, retrievedRangeValue, headLoreFromBlock);
         if (isDebugEnabled()) pluginLogger.info("AP2CD-DEBUG-020 - Item has been converted!");
     }
 
@@ -273,10 +304,13 @@ public class AutoConvertHeadPlay implements Listener {
             return;
         }
 
+        List<Component> itemInHandLore = meta.lore();
+        final Component itemFirstLore = (itemInHandLore != null && !itemInHandLore.isEmpty()) ? itemInHandLore.get(0) : meta.displayName();
+
         Block block = event.getBlockPlaced();
         if (!TypeChecker.isHead(block.getType()) && !TypeChecker.isWallHead(block.getType())) return; //TODO : For later review if we still need a Wall Head/Skull check
         Bukkit.getRegionScheduler().runDelayed(plugin, block.getLocation(), task -> {
-            setHeadMeta(block, convertedFilename, retrievedRangeValue);
+            setHeadMeta(block, convertedFilename, retrievedRangeValue, itemFirstLore);
 
             if (isDebugEnabled()) pluginLogger.info("AP2CD-DEBUG-029 - Item has been converted!");
         }, 1L);
@@ -294,7 +328,7 @@ public class AutoConvertHeadPlay implements Listener {
         return blockEntityData.saveWithFullMetadata(registries);
     }
 
-    public void setHeadMeta(Block skullBlock, String convertedFilename, Float retrievedRangeValue) {
+    public void setHeadMeta(Block skullBlock, String convertedFilename, Float retrievedRangeValue, Component customLore) {
         if (!(skullBlock.getState() instanceof Skull skull)) {
             if (isDebugEnabled()) pluginLogger.info("AP2CD-DEBUG-030 - The block is not a skull, cannot set metadata.");
             return;
@@ -304,9 +338,9 @@ public class AutoConvertHeadPlay implements Listener {
 
         dataHead.set(new NamespacedKey("customdiscs", "customhead"), PersistentDataType.STRING, convertedFilename);
 
-        final Component customLoreHead = Component.text().decoration(TextDecoration.ITALIC, false).content("AudioPlayer converted head").color(NamedTextColor.GRAY).build();
-        String serialized = GsonComponentSerializer.gson().serialize(customLoreHead);
-        dataHead.set(new NamespacedKey("customdiscs", "headlore"), PersistentDataType.STRING, serialized);
+        Component headLoreComponent = (customLore != null) ? customLore : Component.text().decoration(TextDecoration.ITALIC, false).content("AudioPlayer converted head").color(NamedTextColor.GRAY).build();
+        String headLoreSerialized = GsonComponentSerializer.gson().serialize(headLoreComponent);
+        dataHead.set(new NamespacedKey("customdiscs", "headlore"), PersistentDataType.STRING, headLoreSerialized);
 
         if (retrievedRangeValue != null) {
             dataHead.set(new NamespacedKey("customdiscs", "range"), PersistentDataType.FLOAT, retrievedRangeValue);

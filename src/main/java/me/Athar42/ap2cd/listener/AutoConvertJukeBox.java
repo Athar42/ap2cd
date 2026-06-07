@@ -5,7 +5,6 @@ import io.papermc.paper.datacomponent.item.TooltipDisplay;
 import me.Athar42.ap2cd.AudioPlayer2CustomDiscs;
 import me.Athar42.ap2cd.command.SubCommands.Convert;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.minecraft.nbt.CompoundTag;
@@ -23,7 +22,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -158,10 +156,14 @@ public class AutoConvertJukeBox implements Listener {
     private void applyDiscMeta(ItemStack disc, String filename, Float range) {
         if (isDebugEnabled()) pluginLogger.info("AP2CD-DEBUG-037 - Disc meta being applied.");
         ItemMeta discMeta = disc.getItemMeta();
-        @Nullable List<Component> itemLore = new ArrayList<>();
-        final TextComponent customLoreSong = Component.text().decoration(TextDecoration.ITALIC, false).content("AudioPlayer converted disc").color(NamedTextColor.GRAY).build();
-        itemLore.add(customLoreSong);
-        discMeta.lore(itemLore);
+        List<Component> existingLore = discMeta.lore();
+        if (existingLore == null || existingLore.isEmpty()) {
+            List<Component> itemLore = new ArrayList<>();
+            Component displayName = discMeta.displayName();
+            Component loreText = (displayName != null) ? displayName : Component.text().decoration(TextDecoration.ITALIC, false).content("AudioPlayer converted disc").color(NamedTextColor.GRAY).build();
+            itemLore.add(loreText);
+            discMeta.lore(itemLore);
+        }
 
         PersistentDataContainer discPDCdata = discMeta.getPersistentDataContainer();
 
@@ -174,6 +176,20 @@ public class AutoConvertJukeBox implements Listener {
         discPDCdata.set(convertedKeyRetrieval, PersistentDataType.BOOLEAN, true);
 
         disc.setItemMeta(discMeta);
+        if (disc instanceof CraftItemStack discItemActual) {
+            net.minecraft.world.item.ItemStack itemAsNMS = discItemActual.handle;
+            if (itemAsNMS.has(net.minecraft.core.component.DataComponents.CUSTOM_DATA)) {
+                CompoundTag tag = itemAsNMS.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA).copyTag();
+                tag.remove("CustomSound");
+                tag.remove("CustomSoundRange");
+                tag.remove("audioplayer");
+                if (tag.isEmpty()) {
+                    itemAsNMS.remove(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
+                } else {
+                    itemAsNMS.set(net.minecraft.core.component.DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                }
+            }
+        }
     }
 
     private boolean isVanillaMusicDisc(ItemStack item) {
