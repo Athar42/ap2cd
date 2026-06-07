@@ -6,3 +6,16 @@ automaticConvert: false
 # Debug Mode - To display some more logging and Stack Trace information.
 # You SHOULD NOT turn this on, unless you want to be spammed by a lot of messages (console and player side).
 debugMode: false
+
+# [Update Checker Config]
+
+# Enable automatic update checks against Modrinth.
+# Operators are notified on join when an update is available.
+# An initial check is performed on startup, then every 24 hours as long as the server is running.
+update-checker:
+  enabled: true
+  # Release channel to check against: release, beta
+  channel: release
+
+# Do not modify this value — it is used for automatic config migration.
+config-version: 1

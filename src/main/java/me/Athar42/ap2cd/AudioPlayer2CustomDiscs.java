@@ -5,6 +5,7 @@ import me.Athar42.ap2cd.listener.AutoConvertJukeBox;
 import me.Athar42.ap2cd.listener.AutoConvertHeadPlay;
 import me.Athar42.ap2cd.utils.AP2CDUtils;
 import me.Athar42.ap2cd.utils.TypeChecker;
+import me.Athar42.ap2cd.utils.UpdateChecker;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIPaperConfig;
@@ -29,6 +30,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -36,12 +40,31 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
 
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public final class AudioPlayer2CustomDiscs extends JavaPlugin {
 	static AudioPlayer2CustomDiscs instance;
+	private static final int CONFIG_VERSION = 1;
 
-	private Logger pluginLogger;
+	// For my own memo (Athar) - Implemented during development cycle where keys changed, isn't needed for now by could be in the future, so keeping it just in case.
+	// Mapping Keys/Values for when a default value need to be overridden upon update.
+	// If a key format changed at any given config-version, we must declare it there.
+	// Example: if "automaticConvert" changed format at version 2, we need a line like this one :
+	// 2, List.of("automaticConvert")
+	// The "Integer" is the targeted config-version, and the List is the key to overwrite the value with the new default from the config.yml file (so we didn't keep the user value, by safety due to major change).
+	private static final Map<Integer, List<String>> MIGRATION_EXCLUDED_KEYS = Map.of(
+			//2, List.of("automaticConvert")
+    );
+
+	@Nullable
+	private UpdateChecker updateChecker;
+    private Logger pluginLogger;
     private static Component[] helpMessage;
     private static final LegacyComponentSerializer LegacyComponentAmpersand = LegacyComponentSerializer.legacyAmpersand();
     private static boolean debugMode = false;
@@ -68,6 +91,7 @@ public final class AudioPlayer2CustomDiscs extends JavaPlugin {
         new AudioPlayer2CustomDiscsCommand(this).register("audioplayer2customdiscs");
 
         this.saveDefaultConfig();
+        migrateConfig();
 
         debugMode = getConfig().getBoolean("debugMode", false);
         automaticConvertMode = getConfig().getBoolean("automaticConvert", false);
@@ -178,15 +202,80 @@ public final class AudioPlayer2CustomDiscs extends JavaPlugin {
                 }
             );
         }
+
+        if (getConfig().getBoolean("update-checker.enabled", true)) {
+			String updateChannel = getConfig().getString("update-checker.channel", "release");
+			updateChecker = new UpdateChecker(this, updateChannel);
+			updateChecker.start();
+		}
+
+        getServer().getPluginManager().registerEvents(new Listener() {
+			@EventHandler
+			public void onJoin(PlayerJoinEvent event) {
+				if (updateChecker == null) return;
+				String latestVersion = updateChecker.getLatestVersion();
+				if (latestVersion == null) return;
+				Player player = event.getPlayer();
+				if (!player.isOp()) return;
+
+				String currentVersion = getPluginMeta().getVersion();
+				Component playerUpdateMessage = LegacyComponentAmpersand.deserialize("&8[&6AudioPlayer-to-CustomDiscs&8]&r &eA new version of CustomDiscs is available: &6" + latestVersion + " &7(current: " + currentVersion + ")");
+				Component linkUpdateMessage = LegacyComponentAmpersand.deserialize("&8[&6AudioPlayer-to-CustomDiscs&8]&r &7➜ ").append(Component.text(UpdateChecker.MODRINTH_PAGE_URL).color(NamedTextColor.AQUA).decorate(TextDecoration.UNDERLINED).clickEvent(ClickEvent.openUrl(UpdateChecker.MODRINTH_PAGE_URL)).hoverEvent(HoverEvent.showText(Component.text("Click to open the Modrinth page"))));
+				player.sendMessage(playerUpdateMessage);
+				player.sendMessage(linkUpdateMessage);
+			}
+		}, this);
 		
         pluginLogger.info("Successfully registered AudioPlayer2CustomDiscs plugin!");
 
 	}
 	
+	private void migrateConfig() {
+		int currentConfigVersion = getConfig().getInt("config-version", 0);
+		if (currentConfigVersion == CONFIG_VERSION) return;
+
+		pluginLogger.info("Updating config.yml from version " + currentConfigVersion + " to " + CONFIG_VERSION + "...");
+
+		Map<String, Object> savedValues = new HashMap<>();
+		for (String key : getConfig().getKeys(true)) {
+			if (!getConfig().isConfigurationSection(key)) {
+				savedValues.put(key, getConfig().get(key));
+			}
+		}
+
+		File configFile = new File(getDataFolder(), "config.yml");
+		File backupFile = new File(getDataFolder(), "config.yml.bak");
+		if (backupFile.exists()) backupFile.delete();
+		configFile.renameTo(backupFile);
+
+		saveResource("config.yml", false);
+		reloadConfig();
+
+		List<String> excludedKeys = new ArrayList<>();
+		for (int version = currentConfigVersion + 1; version <= CONFIG_VERSION; version++) {
+			excludedKeys.addAll(MIGRATION_EXCLUDED_KEYS.getOrDefault(version, List.of()));
+		}
+
+		for (Map.Entry<String, Object> configEntry : savedValues.entrySet()) {
+			String key = configEntry.getKey();
+			if (key.equals("config-version")) continue;
+			if (excludedKeys.contains(key)) continue;
+			if (getConfig().contains(key)) {
+				getConfig().set(key, configEntry.getValue());
+			}
+		}
+
+		saveConfig();
+		pluginLogger.info("Config migration complete. Backup saved as config.yml.bak");
+	}
+
 	@Override
 	public void onDisable() {
-        PacketEvents.getAPI().terminate();
 		CommandAPI.onDisable();
+        PacketEvents.getAPI().terminate();
+		if (updateChecker != null) {
+			updateChecker.stop();
+		}
         if(pluginLogger != null) pluginLogger.info("Successfully unregistered AudioPlayer2CustomDiscs plugin!");
 	}
 
