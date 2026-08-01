@@ -103,8 +103,8 @@ debugMode: false
 | **1.21.7-9, 1.21.8**       | 1.0.0 – [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3) | 1.0.0 – [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3) |
 | **1.21.9, 1.21.10**        | 1.0.0 – [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3) | 1.0.0 – [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3) |
 | **1.21.11**                | 1.1.1 – [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3) | 1.1.1 – [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3) |
-| **26.1, 26.1.1, 26.1.2**   | 1.2.2 - [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3)         | 1.2.2 - [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3)         |
-| **26.2**   | 1.2.2 - [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3)         | 1.2.2 - [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3)         |
+| **26.1, 26.1.1, 26.1.2**   | 1.2.0 - [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3)         | 1.2.0 - [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3)         |
+| **26.2**   | 1.2.1 - [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3)         | 1.2.1 - [1.2.3](https://modrinth.com/plugin/audioplayer-to-customdiscs/version/1.2.3)         |
 
 ---
 
